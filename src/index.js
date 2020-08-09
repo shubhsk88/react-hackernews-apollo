@@ -14,6 +14,10 @@ const httpLink = createHttpLink({ uri: 'http://localhost:4000' });
 const client = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache(),
+  onError: ({ networkError, graphQLErrors }) => {
+    graphQLErrors && console.log('⚛️ GraphQl Error ⚛️', graphQLErrors);
+    networkError && console.log('👮🏻‍♀️ network error', networkError);
+  },
 });
 ReactDOM.render(
   <BrowserRouter>
