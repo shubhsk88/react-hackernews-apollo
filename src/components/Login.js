@@ -4,33 +4,30 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { useHistory } from 'react-router';
 
+const SIGNUP_MUTATION = gql`
+  mutation SignupMutation($email: String!, $password: String!, $name: String!) {
+    signup(email: $email, password: $password, name: $name) {
+      token
+    }
+  }
+`;
+const LOGIN_MUTATION = gql`
+  mutation LoginMutation($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+    }
+  }
+`;
 const saveUserData = (token) => {
   localStorage.setItem(AUTH_TOKEN, token);
 };
 const Login = () => {
-  const SIGNUP_MUTATION = gql`
-    mutation SignupMutation(
-      $email: String!
-      $password: String!
-      $name: String!
-    ) {
-      signup(email: $email, password: $password, name: $name) {
-        token
-      }
-    }
-  `;
-  const LOGIN_MUTATION = gql`
-    mutation LoginMutation($email: String!, $password: String!) {
-      login(email: $email, password: $password) {
-        token
-      }
-    }
-  `;
   const history = useHistory();
   const [login, setlogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+
   const confirm = async (data) => {
     const { token } = login ? data.login : data.signup;
     saveUserData(token);
@@ -67,7 +64,7 @@ const Login = () => {
       <div className="flex mt-3">
         <Mutation
           mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
-          variable={{ email, password, name }}
+          variables={{ email, password, name }}
           onCompleted={(data) => confirm(data)}
         >
           {(mutation) => (
